@@ -5,5 +5,9 @@
     <string name="description_custom_location_source">커스텀 위치 소스 지정</string>
     <string name="format_location_changed">위치 변경\n(%1$.5f, %2$.5f)</string>
     <string name="add">+</string>
+    <string name="SignUpText">회원가입</string>
+    <string name="InputIDText">ID</string>
+    <string name="SignIpText">로그인</string>
+    <string name="InputPasswordText">비밀번호</string>
 
 </resources>

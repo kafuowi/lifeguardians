@@ -3,6 +3,7 @@ package com.app.lifeguardians
 import android.Manifest.permission.ACCESS_COARSE_LOCATION
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationListener
@@ -75,7 +76,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-
+        val intent = Intent(this, LoginActivity::class.java)
+        startActivity(intent)
 
     }
     private fun getLastLocation() {
