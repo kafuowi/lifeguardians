@@ -27,7 +27,8 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="@string/InputPasswordText"
-            android:inputType="text|textPassword" />
+            android:inputType="text|textPassword"
+            android:visibility="visible" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -35,17 +36,17 @@
             android:orientation="horizontal">
 
             <Button
+                android:id="@+id/BackToLoginButton"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="뒤로" />
+
+            <Button
                 android:id="@+id/SignUp"
                 android:layout_width="130dp"
                 android:layout_height="wrap_content"
                 android:text="@string/SignUpText" />
-
-            <Button
-                android:id="@+id/SignIn"
-                android:layout_width="130dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/SignIpText" />
         </LinearLayout>
 
     </LinearLayout>

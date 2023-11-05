@@ -8,16 +8,17 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
-import android.nfc.Tag
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.fragment.app.FragmentActivity
 import com.app.lifeguardians.databinding.ActivityMainBinding
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.Task
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.naver.maps.map.LocationTrackingMode
 import com.naver.maps.map.MapFragment
 import com.naver.maps.map.NaverMap
@@ -27,7 +28,8 @@ import com.naver.maps.map.util.FusedLocationSource
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
-
+    var mAuth: FirebaseAuth = FirebaseAuth.getInstance()
+    var currentUser: FirebaseUser? = mAuth.getCurrentUser()
 
     private val PERMISSIONS = arrayOf<String>(
         ACCESS_FINE_LOCATION,
@@ -57,6 +59,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             //Toast.makeText(this, "add button clicked", Toast.LENGTH_LONG).show()
             getLastLocation()
         }
+        binding.fabLogout.setOnClickListener{
+            mAuth.signOut()
+
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+        }
 
 
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map_fragment) as MapFragment?
@@ -76,8 +84,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        val intent = Intent(this, LoginActivity::class.java)
-        startActivity(intent)
+        if(currentUser==null){
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+        }
+
+
 
     }
     private fun getLastLocation() {

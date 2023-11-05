@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "159215352753",
+    "firebase_url": "https://d-modeling-site-270e9.firebaseio.com",
+    "project_id": "d-modeling-site-270e9",
+    "storage_bucket": "d-modeling-site-270e9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:159215352753:android:cc2371911cee68a3bfdb90",
+        "android_client_info": {
+          "package_name": "com.app.lifeguardians"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "159215352753-hvtoj3km0crm3iigmqjofjedmgvsgq3g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDU5llCQ8dX0M0YsQ4ErthmIYrQc_BT4Bc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "159215352753-hvtoj3km0crm3iigmqjofjedmgvsgq3g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:159215352753:android:058d7a8fe6d39a09bfdb90",
+        "android_client_info": {
+          "package_name": "com.lifeguardians.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "159215352753-hvtoj3km0crm3iigmqjofjedmgvsgq3g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDU5llCQ8dX0M0YsQ4ErthmIYrQc_BT4Bc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "159215352753-hvtoj3km0crm3iigmqjofjedmgvsgq3g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

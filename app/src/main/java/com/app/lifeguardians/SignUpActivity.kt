@@ -1,44 +1,41 @@
 package com.app.lifeguardians
 
 import android.content.ContentValues.TAG
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import com.app.lifeguardians.databinding.ActivityLoginBinding
-import com.app.lifeguardians.databinding.ActivityMainBinding
+import com.app.lifeguardians.databinding.ActivitySignUpBinding
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 
-class LoginActivity : AppCompatActivity() {
-
-    private var _binding: ActivityLoginBinding? = null
+class SignUpActivity : AppCompatActivity() {
+    private var _binding: ActivitySignUpBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var auth: FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _binding = ActivityLoginBinding.inflate(layoutInflater)
+        _binding = ActivitySignUpBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         auth = Firebase.auth
 
-        binding.SignIn.setOnClickListener {
-
+        binding.SignUp.setOnClickListener {
             val email = binding.editID.text.toString()
             val password = binding.editPASSWORD.text.toString()
-            auth.signInWithEmailAndPassword(email, password)
+
+            auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
                         // Sign in success, update UI with the signed-in user's information
-                        Log.d(TAG, "signInWithEmail:success")
+                        Log.d(TAG, "createUserWithEmail:success")
                         val user = auth.currentUser
                         finish()
                     } else {
                         // If sign in fails, display a message to the user.
-                        Log.w(TAG, "signInWithEmail:failure", task.exception)
+                        Log.w(TAG, "createUserWithEmail:failure", task.exception)
                         Toast.makeText(
                             baseContext,
                             "Authentication failed.",
@@ -47,14 +44,8 @@ class LoginActivity : AppCompatActivity() {
                     }
                 }
         }
-
-        binding.SignUp.setOnClickListener{
-            val intent = Intent(this, SignUpActivity::class.java)
-            startActivity(intent)
+        binding.BackToLoginButton.setOnClickListener{
+            finish()
         }
-
-    }
-    override fun onBackPressed() {
-
     }
 }
