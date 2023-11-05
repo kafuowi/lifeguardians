@@ -2,6 +2,7 @@ package com.app.lifeguardians
 
 import android.Manifest.permission.ACCESS_COARSE_LOCATION
 import android.Manifest.permission.ACCESS_FINE_LOCATION
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -9,6 +10,7 @@ import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -19,13 +21,19 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.FirebaseFirestore
 import com.naver.maps.map.LocationTrackingMode
 import com.naver.maps.map.MapFragment
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.NaverMapOptions
 import com.naver.maps.map.OnMapReadyCallback
 import com.naver.maps.map.util.FusedLocationSource
-
+data class MarkerItem(
+    val uploader: String,
+    val latitude: Double,
+    val longitude: Double,
+    val description: String
+)
 class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
     var mAuth: FirebaseAuth = FirebaseAuth.getInstance()
@@ -51,15 +59,19 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val db = FirebaseFirestore.getInstance()//firestore initialization
+
         supportActionBar?.let {
             it.setDisplayHomeAsUpEnabled(true)
             it.setDisplayShowHomeEnabled(true)
         }
-        binding.fabAdd.setOnClickListener {
+        binding.fabAdd.setOnClickListener {//마커추가
             //Toast.makeText(this, "add button clicked", Toast.LENGTH_LONG).show()
             getLastLocation()
         }
-        binding.fabLogout.setOnClickListener{
+
+
+        binding.fabLogout.setOnClickListener{//sign out
             mAuth.signOut()
 
             val intent = Intent(this, LoginActivity::class.java)
@@ -92,6 +104,18 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
     }
+    fun uploadMarker(markerItem: MarkerItem) {
+        // Add a new document with a generated ID to the "markers" collection
+        val db = FirebaseFirestore.getInstance()
+        db.collection("markers")
+            .add(markerItem)
+            .addOnSuccessListener { documentReference ->
+                Log.d(TAG, "DocumentSnapshot written with ID: ${documentReference.id}")
+            }
+            .addOnFailureListener { e ->
+                Log.w(TAG, "Error adding document", e)
+            }
+    }
     private fun getLastLocation() {
         if (ActivityCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, arrayOf(ACCESS_FINE_LOCATION), REQUEST_LOCATION)
@@ -104,10 +128,33 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                 val latitude = location.latitude
                 val longitude = location.longitude
                 Toast.makeText(this, "Latitude: $latitude, Longitude: $longitude", Toast.LENGTH_SHORT).show()
+
+                val user = mAuth.currentUser
+
+                user?.let {//파이어베이스 업로드
+                    // The user is signed in
+                    val email = user.email // This is the email used for sign-in
+                    val markerItem = email?.let { it1 ->
+                        MarkerItem(
+                            uploader = it1,
+                            latitude = latitude, 
+                            longitude = longitude,  
+                            description = "Description of the marker"
+                        )
+                    }
+
+                    if (markerItem != null) {
+                        uploadMarker(markerItem)
+                    }
+                } ?: run {
+                    // No user is signed in
+                }
+
             } else {
                 Toast.makeText(this, "Location not available", Toast.LENGTH_SHORT).show()
             }
         }
+
     }
 
     override fun onRequestPermissionsResult(requestCode: Int,
