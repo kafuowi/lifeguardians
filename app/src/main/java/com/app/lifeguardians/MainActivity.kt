@@ -22,17 +22,19 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
+import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.LocationTrackingMode
 import com.naver.maps.map.MapFragment
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.NaverMapOptions
 import com.naver.maps.map.OnMapReadyCallback
+import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.util.FusedLocationSource
 data class MarkerItem(
-    val uploader: String,
-    val latitude: Double,
-    val longitude: Double,
-    val description: String
+    val uploader: String = "",
+    val latitude: Double = 0.0,
+    val longitude: Double = 0.0,
+    val description: String = ""
 )
 class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -50,6 +52,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var locationManager: LocationManager
     private lateinit var locationListener: LocationListener
+
+
 
 
     private var _binding: ActivityMainBinding? = null
@@ -100,6 +104,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
+
+
+        //마커정보 가져오기
 
 
 
@@ -173,8 +180,31 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(naverMap: NaverMap) {
         naverMap.locationSource = locationSource
         naverMap.locationTrackingMode = LocationTrackingMode.Follow
+        val firestore = FirebaseFirestore.getInstance()
+        val markersCollection = firestore.collection("markers")
+
 
         ActivityCompat.requestPermissions(this, PERMISSIONS, LOCATION_PERMISSION_REQUEST_CODE);
+        markersCollection.get().addOnSuccessListener { documents ->
+            val markerList = documents.mapNotNull { snapshot ->
+                snapshot.toObject(MarkerItem::class.java)
+            }
+            markerList.forEach { marker ->
+                // Same body as in the for-loop
+                val uploader = marker.uploader
+                val latitude = marker.latitude
+                val longitude = marker.longitude
+                val description = marker.description
+                val thismarker = Marker()
+                thismarker.position = LatLng(latitude, longitude)
+                thismarker.map = naverMap
+                // Do something with the data
+            }
+            // Now markerList contains all markers from Firestore
+            // Use this list to update your UI or handle markers on map
+        }.addOnFailureListener { exception ->
+            // Handle error
+        }
     }
 
     companion object {
